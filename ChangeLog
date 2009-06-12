@@ -1,6 +1,7 @@
 2009-06-12  Oliver Hader  <oliver@typo3.org>
 
 	* Fixed bug: Defining XCLASS only worked for TYPO3 4.2.0 but not for patch level releases
+	* Cleanup: Defined proper SVN properties, fixed formatting and removed unused stuff
 
 2008-04-26  Fernando Arconada  <fernando.arconada@gmail.com>
 

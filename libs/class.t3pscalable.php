@@ -19,16 +19,16 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+
 /**
 * Class to have a TYPO3 more scalable
+*
+* $Id$
+*
 * @author Fernando Arconada fernando.arconada at gmail dot com
 * @version 0.9
 */
-
-/**
- * The core class itself 
- *
- */
 class t3pscalable{
 	/**
 	 * Database servers configurations
@@ -49,7 +49,7 @@ class t3pscalable{
 	 * @param array $conf
 	 */
 	public function init($conf){
-		$this->db_config = $conf['db'];		
+		$this->db_config = $conf['db'];
 		$this->memcached_config = $conf['memcached'];
 	}
 	/**
@@ -81,7 +81,7 @@ class t3pscalable{
 
 
 	}
-	
+
 	/**
 	 * Public wrapper function for getDbConnection only for 'read' servers
 	 *
@@ -91,7 +91,7 @@ class t3pscalable{
 	public function getDbReadConnection($attempts){
 		return $this->getDbConnection('read',$attempts);
 	}
-	
+
 	/**
 	 * Public wrapper function for getDbConnection only for 'write' servers
 	 *
@@ -101,7 +101,7 @@ class t3pscalable{
 	public function getDbWriteConnection($attempts){
 		return $this->getDbConnection('write',$attempts);
 	}
-	
+
 	/**
 	 * Private function to get DB server config array in a random way, the server its selected depending of its weight
 	 *
@@ -129,7 +129,7 @@ class t3pscalable{
 	public function getReadHost(){
 		return $this->getDbHost('read');
 	}
-	
+
 	/**
 	 * Public wrapper function for getDbHost only for 'write' servers
 	 *
@@ -151,27 +151,27 @@ class t3pscalable{
 		$memcached_obj=FALSE;
 		if ($this->memcached_config['firstLocalhost']){
 			//get localhost memcached config
-			$local_memcached = null;	
+			$local_memcached = null;
 			foreach($this->memcached_config['servers'] as $server){
 				if($server['host']=='localhost'){
 					$local_memcached=$server;
 					break;
 				}
 			}
-			
+
 			if($local_memcached != null){
 				$memcached_obj = @memcache_connect($local_memcached['host'], $local_memcached['port']);
 				if($memcached_obj){
 					return $memcached_obj;
 				}elseif(!$attempts){
 					// disable memcached if you couldnt get a connection
-					return $GLOBALS['t3p_scalable_conf']['memcached']['enabled']=FALSE ; 
+					return $GLOBALS['t3p_scalable_conf']['memcached']['enabled']=FALSE;
 				}
 			}
 		}
 		// at this point: no localhost server in first place or cant connect to it
 		// just take a random memcached server
-		$memcached_hosts = array();	
+		$memcached_hosts = array();
 		while (!$memcached_obj && $attemps>0){
 			foreach ($this->memcached_config['servers'] as $host){
 				if(isset($host['weight'])){
@@ -182,15 +182,15 @@ class t3pscalable{
 					array_push($memcached_hosts,$host);
 				}
 			}
-			$server = $memcached_hosts[rand(0,count($db_hosts)-1)];		
+			$server = $memcached_hosts[rand(0,count($db_hosts)-1)];
 			$memcached_obj = @memcache_connect($server['host'], $server['port']);
 			$attempts--;
-			
+
 		}
+
 		return $memcached_obj;
-		
 	}
-	
+
 	/**
 	 * Returns the memcached key prefix to avoid collision of serveral applications that share the same memcached server
 	 *
@@ -200,7 +200,10 @@ class t3pscalable{
 		return $this->memcached_config['keyPrefix'];
 	}
 }
+
+
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/t3p_scalable/libs/class.t3pscalable.php'])	{
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/t3p_scalable/libs/class.t3pscalable.php']);
 }
+
 ?>

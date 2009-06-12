@@ -19,18 +19,17 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
+
 /**
+* Extends the functionality of TYPO3_DB - the general database handler.
+*
+* $Id$
 *
 * @author Fernando Arconada fernando.arconada at gmail dot com
 * @version 0.9
  */
-
-
-
 class ux_t3lib_DB extends t3lib_DB {
-
-
-
 		// Default link identifier:
 	var $link = FALSE;
 		// link to SELECT queries
@@ -47,7 +46,7 @@ class ux_t3lib_DB extends t3lib_DB {
 	var $memcached_lastQueryNumRows=0;
 	var $memcached_ttl=0;
 	var $memcached_realttl=0;
-	
+
 	private static $memcached_cursor=0;
 
 	/**
@@ -70,7 +69,7 @@ class ux_t3lib_DB extends t3lib_DB {
 		if ($GLOBALS['BE_USER']->user['uid']){
 			$GLOBALS['t3p_scalable_conf']['memcached']['enabled']=FALSE;
 		}
-		
+
 		// First try from memcached if enabled and if its you you have to try in memecahed by default
 		// you can disable memcached for a single query with a HINT setting $tryMemcached=false
 		if ($GLOBALS['t3p_scalable_conf']['memcached']['enabled'] && $this->memcached_tryMemcached){
@@ -83,7 +82,7 @@ class ux_t3lib_DB extends t3lib_DB {
 				$this->memcached_lastQueryObject=FALSE;
 			}
 		}
-	
+
 		// There isnt memcached or memcached couldnt find the object or you have disabled memcached for this query
 		if(!$GLOBALS['t3p_scalable_conf']['memcached']['enabled'] || !$this->memcached_lastQueryObject || !$this->memcached_tryMemcached){
 			$res = mysql_query($query, $this->linkRead);
@@ -141,7 +140,7 @@ class ux_t3lib_DB extends t3lib_DB {
 
 			// Return query:
 		if ($this->debugOutput || $this->store_lastBuiltQuery) $this->debug_lastBuiltQuery = $query;
-		
+
 		// If memcached its enabled
 		if ($GLOBALS['t3p_scalable_conf']['memcached']['enabled']){
 			if($tryMemcached===''){
@@ -186,7 +185,7 @@ class ux_t3lib_DB extends t3lib_DB {
 			$this->memcached_ttl = $GLOBALS['t3p_scalable_conf']['memcached']['objectTimeout'];
 			$this->memcached_realttl = $this->memcached_ttl + $GLOBALS['t3p_scalable_conf']['memcached']['queryGenerationTime']*2;
 		}
-		
+
 		// you need 2 links to database one for read/write queries (link) and other for read only queries (linkRead)
 		if ($GLOBALS['TYPO3_CONF_VARS']['SYS']['no_pconnect'])	{
 			$this->linkRead = $this->t3pscalable->getDbReadConnection($GLOBALS['t3p_scalable_conf']['db']['readAttempts']);
@@ -219,26 +218,27 @@ class ux_t3lib_DB extends t3lib_DB {
 		return $this->linkRead;
 	}
 
-        /** 
-         * Select a MySQL database
-         * mysql_select_db() wrapper function
-         * Usage count/core: 8
-         *
-         * @param       string          Database to connect to.
-         * @return      boolean         Returns TRUE on success or FALSE on failure.
-         */
-    function sql_select_db($TYPO3_db)       {
-        		// very important: use the same databasename in all servers
-                $ret = @mysql_select_db($TYPO3_db, $this->link);
-                if (!$ret) {
-                        t3lib_div::sysLog('Could not select MySQL database '.$TYPO3_db.': '.mysql_error(),'Core',4);
-	        }
-                $ret = @mysql_select_db($TYPO3_db, $this->linkRead);
-                if (!$ret) {
-                        t3lib_div::sysLog('Could not select MySQL database '.$TYPO3_db.': '.mysql_error(),'Core',4);
-	        }
-                return $ret;
-        }
+	/**
+	 * Select a MySQL database
+	 * mysql_select_db() wrapper funct
+	 *
+	 * @param	string		Database to connect to.
+	 * @return	boolean		Returns TRUE on success or FALSE on failure.
+	 */
+	function sql_select_db($TYPO3_db)	   {
+			// very important: use the same databasename in all servers
+		$ret = @mysql_select_db($TYPO3_db, $this->link);
+
+		if (!$ret) {
+					t3lib_div::sysLog('Could not select MySQL database '.$TYPO3_db.': '.mysql_error(),'Core',4);
+		}
+			$ret = @mysql_select_db($TYPO3_db, $this->linkRead);
+			if (!$ret) {
+					t3lib_div::sysLog('Could not select MySQL database '.$TYPO3_db.': '.mysql_error(),'Core',4);
+		}
+
+		return $ret;
+	}
 
  	 /** Returns the number of selected rows.
 	 * mysql_num_rows() wrapper function
@@ -268,7 +268,7 @@ class ux_t3lib_DB extends t3lib_DB {
 			if(!$this->memcached_lastQueryObject){
 				/**
 				 * $this->memcached_lastQueryObject is set in exec_SELECTquery
-				 * The object isnt in memcahed: save it to be able to get from memcached the next time 
+				 * The object isnt in memcahed: save it to be able to get from memcached the next time
 			 	 * I have to store all rows one by one in memcached to be able to use sql_fetch_assoc transparently
 			 	 */
 				$this->memcached_obj->set($this->t3pscalable->getMemcachedKeyPrefix().$this->memcached_md5lastSelectQuery,$this->memcached_lastQueryNumRows,$GLOBALS['t3p_scalable_conf']['memcached']['compressed'],$this->memcached_realttl);
@@ -279,7 +279,7 @@ class ux_t3lib_DB extends t3lib_DB {
 				}
 			}else{
 				// just get the row from memcached
-				$row=$this->memcached_obj->get($this->t3pscalable->getMemcachedKeyPrefix().$this->memcached_md5lastSelectQuery.'-'.self::$memcached_cursor);		
+				$row=$this->memcached_obj->get($this->t3pscalable->getMemcachedKeyPrefix().$this->memcached_md5lastSelectQuery.'-'.self::$memcached_cursor);
 			}
 
 			self::$memcached_cursor++;
@@ -288,7 +288,6 @@ class ux_t3lib_DB extends t3lib_DB {
 			$this->debug_check_recordset($res);
 			return mysql_fetch_assoc($res);
 		}
-		
 	}
 
 	/**
@@ -305,7 +304,7 @@ class ux_t3lib_DB extends t3lib_DB {
 			if(!$this->memcached_lastQueryObject){
 				/**
 				 * $this->memcached_lastQueryObject is set in exec_SELECTquery
-				 * The object isnt in memcahed: save it to be able to get from memcached the next time 
+				 * The object isnt in memcahed: save it to be able to get from memcached the next time
 			 	 * I have to store all rows one by one in memcached to be able to use sql_fetch_assoc transparently
 			 	 */
 				$this->memcached_obj->set($this->t3pscalable->getMemcachedKeyPrefix().$this->memcached_md5lastSelectQuery,$this->memcached_lastQueryNumRows,$GLOBALS['t3p_scalable_conf']['memcached']['compressed'],$this->memcached_realttl);
@@ -316,7 +315,7 @@ class ux_t3lib_DB extends t3lib_DB {
 				}
 			}else{
 				// just get the row from memcached
-				$row=$this->memcached_obj->get($this->t3pscalable->getMemcachedKeyPrefix().$this->memcached_md5lastSelectQuery.'-'.self::$memcached_cursor);		
+				$row=$this->memcached_obj->get($this->t3pscalable->getMemcachedKeyPrefix().$this->memcached_md5lastSelectQuery.'-'.self::$memcached_cursor);
 			}
 			self::$memcached_cursor++;
 			return $row;
@@ -346,7 +345,6 @@ class ux_t3lib_DB extends t3lib_DB {
 			$this->debug_check_recordset($res);
 			return mysql_free_result($res);
 		}
-		
 	}
 
 }
@@ -355,4 +353,5 @@ class ux_t3lib_DB extends t3lib_DB {
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/t3p_scalable/typo3versions/4.2.FF/class.ux_t3lib_db.php'])	{
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/t3p_scalable/typo3versions/4.2.FF/class.ux_t3lib_db.php']);
 }
+
 ?>
