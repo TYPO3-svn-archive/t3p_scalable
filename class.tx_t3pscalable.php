@@ -29,7 +29,7 @@
 * @author Fernando Arconada fernando.arconada at gmail dot com
 * @version 0.9
 */
-class t3pscalable{
+class tx_t3pscalable {
 	/**
 	 * Database servers configurations
 	 *
@@ -202,8 +202,8 @@ class t3pscalable{
 }
 
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/t3p_scalable/libs/class.t3pscalable.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/t3p_scalable/libs/class.t3pscalable.php']);
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/t3p_scalable/class.tx_t3pscalable.php'])	{
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/t3p_scalable/class.tx_t3pscalable.php']);
 }
 
 ?>

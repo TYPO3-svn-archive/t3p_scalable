@@ -178,7 +178,7 @@ class ux_t3lib_DB extends t3lib_DB {
 			// if the connection fails we need a different method to get the error message
 		ini_set('track_errors', 1);
 		ini_set('html_errors', 0);
-		$this->t3pscalable = t3lib_div::makeInstance('t3pscalable');
+		$this->t3pscalable = t3lib_div::makeInstance('tx_t3pscalable');
 		$this->t3pscalable->init($GLOBALS['t3p_scalable_conf']);
 		if($GLOBALS['t3p_scalable_conf']['memcached']['enabled']){
 			$this->memcached_obj = $this->t3pscalable->getMemcachedConnection($GLOBALS['t3p_scalable']['memcached']['connectionAttempts']);
