@@ -9,13 +9,13 @@ if (!defined('TYPO3_MODE')) die ('Access denied.');
 
 //---- logic -------------------------------------------------------------------
 // code of XClasses varies between TYPO3 versions
-switch ($TYPO_VERSION) {
-	case '4.2.0':
+switch (TYPO3_branch) {
+	case '4.2':
 		$TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['t3lib/class.t3lib_db.php']= t3lib_extMgm::extPath($_EXTKEY) . 'typo3versions/4.2.FF/class.ux_t3lib_db.php';
 		break;
 
 	default:
 		// unsupported version. do nothing.
-} // end: switch
+}
 
 ?>

@@ -1,5 +1,7 @@
-(add new changes on top of this file)
+2009-06-12  Oliver Hader  <oliver@typo3.org>
 
-08-04-26 Fernando Arconada  <fernando.arconada@gmail.com>
+	* Fixed bug: Defining XCLASS only worked for TYPO3 4.2.0 but not for patch level releases
+
+2008-04-26  Fernando Arconada  <fernando.arconada@gmail.com>
 
 	* Initial release
