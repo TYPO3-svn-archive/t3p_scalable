@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2008 Fernando Arconada fernando.arconada at gmail dot com
+*  (c) 2008-2009 Fernando Arconada fernando.arconada at gmail dot com
 *  All rights reserved
 *
 *
@@ -30,28 +30,27 @@
 * @version 0.9
 */
 class tx_t3pscalable {
+	protected $assuredWriteTables;
+	protected $isAssuredWriteBackendSession;
+
+	protected $assureConfiguration;
+
 	/**
 	 * Database servers configurations
 	 *
 	 * @var array
 	 */
-	var $db_config=null;
-	/**
-	 * Memcached servers configurations
-	 *
-	 * @var array
-	 */
-	var $memcached_config=null;
+	protected $db_config=null;
 
 	/**
-	 * Initializes the objects of this class
-	 *
-	 * @param array $conf
+	 * Constructs this object.
 	 */
-	public function init($conf){
-		$this->db_config = $conf['db'];
-		$this->memcached_config = $conf['memcached'];
+	public function __construct() {
+		$this->db_config = $GLOBALS['t3p_scalable_conf']['db'];
+		$this->assureConfiguration = $GLOBALS['t3p_scalable_conf']['db']['assure'];
+		$this->getAssuredWriteTables();
 	}
+
 	/**
 	 * Private function to get a DB (both, read and write servers)
 	 *
@@ -138,66 +137,66 @@ class tx_t3pscalable {
 	public function getWriteHost(){
 		return $this->getDbHost('write');
 	}
+
 	/**
-	 * function ti return a memcached conection
+	 * Gets the tables that are assured to be handled by write/master hosts only.
 	 *
-	 * @param int $attempts number of times to try to connect to a memcached server
-	 * @return resource_id memcached connection resource or FALSE
+	 * @return	array		Tables that are assured to be handled by write/master hosts only.
 	 */
-	public function getMemcachedConnection($attempts=1){
-	/* $attempts : number of times to try to connect to a memcached server
-		1..n : 1 or more tries choosing servers in a pseudo random fashion
-	*/
-		$memcached_obj=FALSE;
-		if ($this->memcached_config['firstLocalhost']){
-			//get localhost memcached config
-			$local_memcached = null;
-			foreach($this->memcached_config['servers'] as $server){
-				if($server['host']=='localhost'){
-					$local_memcached=$server;
-					break;
-				}
-			}
+	public function getAssuredWriteTables() {
+		if (!isset($this->assuredWriteTables)) {
+			$this->assuredWriteTables = array();
 
-			if($local_memcached != null){
-				$memcached_obj = @memcache_connect($local_memcached['host'], $local_memcached['port']);
-				if($memcached_obj){
-					return $memcached_obj;
-				}elseif(!$attempts){
-					// disable memcached if you couldnt get a connection
-					return $GLOBALS['t3p_scalable_conf']['memcached']['enabled']=FALSE;
-				}
+			if (isset($this->assureConfiguration['write']['tables'])) {
+				$this->assuredWriteTables = array_flip(
+					t3lib_div::trimExplode(',', $this->assureConfiguration['write']['tables'], true)
+				);
 			}
 		}
-		// at this point: no localhost server in first place or cant connect to it
-		// just take a random memcached server
-		$memcached_hosts = array();
-		while (!$memcached_obj && $attemps>0){
-			foreach ($this->memcached_config['servers'] as $host){
-				if(isset($host['weight'])){
-					for($i=1;$i<=intval($host['weight']);$i++){
-						array_push($memcached_hosts,$host);
-					}
-				}else{
-					array_push($memcached_hosts,$host);
-				}
-			}
-			$server = $memcached_hosts[rand(0,count($db_hosts)-1)];
-			$memcached_obj = @memcache_connect($server['host'], $server['port']);
-			$attempts--;
 
-		}
-
-		return $memcached_obj;
+		return $this->assuredWriteTables;
 	}
 
 	/**
-	 * Returns the memcached key prefix to avoid collision of serveral applications that share the same memcached server
+	 * Determines whether a table name is assured to be handled by write/master hosts only.
 	 *
-	 * @return string
+	 * @param	string		$table: The table name to be looked up
+	 * @return	boolean		Whether a table name is assured to be handled by write/master hosts only
 	 */
-	public function getMemcachedKeyPrefix(){
-		return $this->memcached_config['keyPrefix'];
+	public function isAssuredWriteTable($table) {
+		$result = false;
+		$table = trim($table);
+
+			// Check whether a direct match is successful:
+		if (isset($this->assuredWriteTables[$table])) {
+			$result = true;
+			// Pre-check if it is required to search for tables in the string
+			// (could be something like "fe_sessions AS sessions, fe_users"):
+		} elseif (strpos($table, ' ') || strpos($table, ',')) {
+			if (preg_match_all('/,?\b(\w+)\b(\s+AS\s+\w+)?/i', $table, $matches)) {
+				foreach ($matches[1] as $tableItem) {
+					if (isset($this->assuredWriteTables[$tableItem])) {
+						$result = true;
+						break;
+					}
+				}
+			}
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Determines whether a backend user session is assured to be handled by write/master hosts only.
+	 *
+	 * @return	boolean		Whether a backend user session is assured to be handled by write/master hosts only.
+	 */
+	public function isAssuredWriteBackendSession() {
+		$result = false;
+		if (isset($this->assureConfiguration['write']['backendSession']) && $this->assureConfiguration['write']['backendSession']) {
+			$result = (isset($GLOBALS['BE_USER']) && isset($GLOBALS['BE_USER']->user['uid']));
+		}
+		return $result;
 	}
 }
 
