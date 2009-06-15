@@ -1,6 +1,7 @@
 2009-06-15  Oliver Hader  <oliver@typo3.org>
 
 	* Set version to 1.3.0-dev
+	* Cleanup: Remove structures that depent on specific TYPO3 versions
 
 2009-06-15  Oliver Hader  <oliver@typo3.org>
 
