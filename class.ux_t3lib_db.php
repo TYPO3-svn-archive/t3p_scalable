@@ -132,7 +132,9 @@ class ux_t3lib_DB extends t3lib_DB {
 		ini_restore('html_errors');
 
 		if (!$this->linkRead) {
+				// Using default link  as fallback if read only link is not available:
 			t3lib_div::sysLog('Could not connect to MySQL server ' . $TYPO3_db_host . ' with user ' . $TYPO3_db_username . ': ' . $error_msg, 'Core', 4);
+			$this->linkRead = $this->link;
 		} else {
 			$setDBinit = t3lib_div::trimExplode(chr(10), $GLOBALS['TYPO3_CONF_VARS']['SYS']['setDBinit'],TRUE);
 			foreach ($setDBinit as $v) {
