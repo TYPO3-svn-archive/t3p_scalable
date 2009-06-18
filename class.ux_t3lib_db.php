@@ -119,7 +119,7 @@ class ux_t3lib_DB extends t3lib_DB {
 		ini_set('html_errors', 0);
 
 		// you need 2 links to database one for read/write queries (link) and other for read only queries (linkRead)
-		if ($GLOBALS['TYPO3_CONF_VARS']['SYS']['no_pconnect'])	{
+		if ($GLOBALS['TYPO3_CONF_VARS']['SYS']['no_pconnect']) {
 			$this->linkRead = $this->t3pscalable->getDbReadConnection($GLOBALS['t3p_scalable_conf']['db']['readAttempts']);
 			$this->link = $this->t3pscalable->getDbWriteConnection($GLOBALS['t3p_scalable_conf']['db']['writeAttempts']);
 		} else {
@@ -135,14 +135,14 @@ class ux_t3lib_DB extends t3lib_DB {
 			t3lib_div::sysLog('Could not connect to MySQL server '.$TYPO3_db_host.' with user '.$TYPO3_db_username.': '.$error_msg,'Core',4);
 		} else {
 			$setDBinit = t3lib_div::trimExplode(chr(10), $GLOBALS['TYPO3_CONF_VARS']['SYS']['setDBinit'],TRUE);
-			foreach ($setDBinit as $v)	{
-				if (mysql_query($v, $this->linkRead) === FALSE)	{
-					t3lib_div::sysLog('Could not initialize DB connection with query "'.$v.'": '.mysql_error($this->linkRead),'Core',3);
+			foreach ($setDBinit as $v) {
+				if (mysql_query($v, $this->linkRead) === FALSE) {
+					t3lib_div::sysLog('Could not initialize DB connection with query "'.$v.'": '.mysql_error($this->linkRead),'Core', 3);
 				}
 			}
-			foreach ($setDBinit as $v)	{
+			foreach ($setDBinit as $v) {
 				if (mysql_query($v, $this->link) === FALSE)	{
-					t3lib_div::sysLog('Could not initialize DB connection with query "'.$v.'": '.mysql_error($this->link),'Core',3);
+					t3lib_div::sysLog('Could not initialize DB connection with query "'.$v.'": '.mysql_error($this->link),'Core', 3);
 				}
 			}
 		}
@@ -162,11 +162,11 @@ class ux_t3lib_DB extends t3lib_DB {
 		$ret = @mysql_select_db($TYPO3_db, $this->link);
 
 		if (!$ret) {
-			t3lib_div::sysLog('Could not select MySQL database '.$TYPO3_db.': '.mysql_error(),'Core',4);
+			t3lib_div::sysLog('Could not select MySQL database '.$TYPO3_db.': '.mysql_error(),'Core', 4);
 		}
 		$ret = @mysql_select_db($TYPO3_db, $this->linkRead);
 		if (!$ret) {
-			t3lib_div::sysLog('Could not select MySQL database '.$TYPO3_db.': '.mysql_error(),'Core',4);
+			t3lib_div::sysLog('Could not select MySQL database '.$TYPO3_db.': '.mysql_error(),'Core', 4);
 		}
 
 		return $ret;
