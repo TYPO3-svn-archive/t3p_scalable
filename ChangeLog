@@ -1,3 +1,7 @@
+2010-01-05  Oliver Hader  <oliver@typo3.org>
+
+	* Added feature: Added assure property 'cliDispatch' to use write/master database for CLI processes
+
 2009-06-18  Oliver Hader  <oliver@typo3.org>
 
 	* Cleanup: Fixed formatting

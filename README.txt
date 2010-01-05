@@ -3,7 +3,7 @@ To be added to documentation:
 =============================
 
 
->>	2009-06-15  Oliver Hader  <oliver@typo3.org>
+>>	2010-01-05  Oliver Hader  <oliver@typo3.org>
 
 	Assure Configuration
 
@@ -22,6 +22,10 @@ To be added to documentation:
 		  Defines whether the current backend user sessions shall use the
 		  write/master connection.
 		  Example: 'backendSession' => true
+		+ 'cliDispatch' (boolean)
+		  Defines whether the write/master connection shall be used when
+		  a CLI process was dispatched. This can be handy e.g. for running
+		  a crawler task.
 
 -------------------------------------------------------------------------------
 

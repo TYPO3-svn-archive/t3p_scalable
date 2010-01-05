@@ -69,7 +69,7 @@ class ux_t3lib_DB extends t3lib_DB {
 	 * @return	pointer		MySQL result pointer / DBAL object
 	 */
 	public function exec_SELECTquery($select_fields, $from_table, $where_clause, $groupBy='', $orderBy='', $limit='') {
-		if (!$this->t3pscalable->isAssuredWriteBackendSession() && !$this->t3pscalable->isAssuredWriteTable($from_table)) {
+		if (!$this->t3pscalable->isAssuredWriteBackendSession() && !$this->t3pscalable->isAssuredWriteCliDispatch() && !$this->t3pscalable->isAssuredWriteTable($from_table)) {
 			$query = $this->SELECTquery($select_fields, $from_table, $where_clause, $groupBy, $orderBy, $limit);
 			$res = mysql_query($query, $this->linkRead);
 

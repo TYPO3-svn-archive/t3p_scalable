@@ -198,6 +198,19 @@ class tx_t3pscalable {
 		}
 		return $result;
 	}
+
+	/**
+	 * Determines whether a CLI process is dispatched and assured to be handled by write/master hosts only.
+	 *
+	 * @return	boolean		Whether a CLI process is dispatched and assured to be handled by write/master hosts only.
+	 */
+	public function isAssuredWriteCliDispatch() {
+		$result = false;
+		if (isset($this->assureConfiguration['write']['cliDispatch']) && $this->assureConfiguration['write']['cliDispatch']) {
+			$result = (defined('TYPO3_cliMode') && TYPO3_cliMode);
+		}
+		return $result;
+	}
 }
 
 
