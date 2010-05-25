@@ -1,3 +1,7 @@
+2010-05-25  Sascha Kettler  <sascha.kettler@aoemedia.de>
+
+	* Fixed Bug #7817: setDBinit ignored when using write connection after read failure
+
 2010-01-05  Oliver Hader  <oliver@typo3.org>
 
 	* Added feature: Added assure property 'cliDispatch' to use write/master database for CLI processes

@@ -133,18 +133,22 @@ class ux_t3lib_DB extends t3lib_DB {
 
 		if (!$this->linkRead) {
 				// Using default link  as fallback if read only link is not available:
-			t3lib_div::sysLog('Could not connect to MySQL server ' . $TYPO3_db_host . ' with user ' . $TYPO3_db_username . ': ' . $error_msg, 'Core', 4);
+			t3lib_div::sysLog('Could not connect to read MySQL server: ' . $error_msg, 'Core', 4);
 			$this->linkRead = $this->link;
+		}
+		
+		if (!$this->linkRead) {
+			t3lib_div::sysLog('Could not connect to any MySQL server: ' . $error_msg, 'Core', 4);
 		} else {
 			$setDBinit = t3lib_div::trimExplode(chr(10), $GLOBALS['TYPO3_CONF_VARS']['SYS']['setDBinit'],TRUE);
 			foreach ($setDBinit as $v) {
 				if (mysql_query($v, $this->linkRead) === FALSE) {
-					t3lib_div::sysLog('Could not initialize DB connection with query "' . $v . '": ' . mysql_error($this->linkRead), 'Core', 3);
+					t3lib_div::sysLog('Could not initialize read DB connection with query "' . $v . '": ' . mysql_error($this->linkRead), 'Core', 3);
 				}
 			}
 			foreach ($setDBinit as $v) {
 				if (mysql_query($v, $this->link) === FALSE)	{
-					t3lib_div::sysLog('Could not initialize DB connection with query "' . $v . '": ' . mysql_error($this->link), 'Core', 3);
+					t3lib_div::sysLog('Could not initialize write DB connection with query "' . $v . '": ' . mysql_error($this->link), 'Core', 3);
 				}
 			}
 		}
