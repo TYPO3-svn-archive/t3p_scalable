@@ -1,3 +1,7 @@
+2010-06-14  Oliver Hader  <oliver@typo3.org>
+
+	* Set version to 1.4.0
+
 2010-05-25  Sascha Kettler  <sascha.kettler@aoemedia.de>
 
 	* Fixed Bug #7817: setDBinit ignored when using write connection after read failure
