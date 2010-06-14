@@ -1,7 +1,7 @@
 2010-06-14  Oliver Hader  <oliver@typo3.org>
 
 	* Set version to 1.4.0
-!!! * Fixed bug: Wrong XCLASS definition of ux_t3lib_DB
+!!!	* Fixed bug: Wrong XCLASS definition of ux_t3lib_DB
 
 2010-05-25  Sascha Kettler  <sascha.kettler@aoemedia.de>
 
