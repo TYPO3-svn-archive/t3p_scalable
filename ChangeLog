@@ -1,3 +1,7 @@
+2010-06-15  Oliver Hader  <oliver@typo3.org>
+
+	* Fixed bug: Typing error in XCLASS definition
+
 2010-06-14  Oliver Hader  <oliver@typo3.org>
 
 	* Set version to 1.4.0
