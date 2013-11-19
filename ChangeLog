@@ -1,3 +1,7 @@
+2013-11-13 Juergen Kussmann <juergen.kussmann@aoemedia.de>
+
+	* Fixed bug: Use last used DB-linkHandler in method ux_t3lib_DB::sql_error
+
 2010-06-15  Oliver Hader  <oliver@typo3.org>
 
 	* Fixed bug: Typing error in XCLASS definition
